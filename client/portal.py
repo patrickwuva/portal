@@ -1,7 +1,11 @@
-#!/usr/bin/env python3
+from helpers.check_api import check_api
+
+print(check_api())
+
+
 def main():
-    print("hello")
+    if not check_api():
+        print("not signed in")
 
 if __name__ == "__main__":
     main()
-    
