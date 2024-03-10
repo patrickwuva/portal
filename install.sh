@@ -1,17 +1,11 @@
 #!/bin/sh
-
-mkdir -p "$HOME/.portal"
+cp -r .portal "$HOME/"
 
 python3 -m venv "$HOME/.portal/venv"
 
+cp portal /usr/local/bin/
 
-cp portal.sh /usr/local/bin/portal
-
-chmod +x /usr/local/bin/portal
-
-mv portal.py "$HOME/.portal"
-mv helpers "$HOME/.portal"
-mv requirements.txt "$HOME/.portal"
+sudo chmod +x /usr/local/bin/portal
 
 cd "$HOME/.portal"
 

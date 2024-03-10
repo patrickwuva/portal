@@ -3,7 +3,7 @@ import bcrypt
 import requests
 import getpass
 import time
-from helpers import key
+from helpers.tools import get_key, check_key, put
 
 print("Welcome to portal a simple file sharing program")
 
@@ -68,7 +68,7 @@ def signup():
                 
         if response.status_code == 200:
             data = {"username": user_info["username"], "password": user_info["password"], "api-key" : response.json()["api-key"]}
-            key.put(data)
+            put(data)
         else:
             print("error while signing up")
 

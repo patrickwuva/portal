@@ -1,0 +1,6 @@
+#!/bin/bash
+source "$HOME/.portal/venv/bin/activate"
+
+python "$HOME/.portal/portal.py" "$@"
+
+deactivate
