@@ -1,5 +1,5 @@
 #!/bin/sh
-cp -r .portal "$HOME/"
+sudo cp -r .portal "$HOME/"
 
 python3 -m venv "$HOME/.portal/venv"
 
