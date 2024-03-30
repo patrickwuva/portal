@@ -3,52 +3,53 @@ import json
 import glob
 import base64
 import requests
+from pathlib import Path
 
-home = os.path.expanduser('~')
-path = os.path.join(home,'.portal/.info')
+path = Path.home / '.portal' / 'user.info'
+
+def make_config():
+    if not path.exists():
+        path.parent.mkdir(exist_ok=True)
+        with resources.path('portal', 'user.info') as package_path:
+            copyfile(package_path, path)
+
 
 def get_key():
-    
     with open(path, 'r') as file:
         data = json.load(file)
-    
-    return data["api-key"]
+   
+   return data["api-key"]
 
 def check_key():
-    if glob.glob(path):
-        return True
+    user = get_key()
 
-    else:
+    if user["username"] == "" or user["api-key"] == 0:
         return False
+
+    return True
 
 def put(data):
     with open(path, "w") as file:
         json.dump(data, file, indent=4)
 
 def get_info():
-    home = os.path.expanduser('~')
-    portal_path = os.path.join(home,'.portal/.info')
-
     with open(portal_path, 'r') as file:
         return json.load(file)
 
-
 def check_size(filepath):
     max_size = 100 * 1024 * 1024
-
     file_size = os.path.getsize(filepath)
 
     if file_size > max_size:
         return False
+  
     else:
         return True
 
 def send_file(filename):
     user = get_info()
-    
     headers = { "X-API-KEY": get_key() , "username": user["username"] }
     url = "https://chochedportal.xyz/create"
-    
     print(f"path: {filename}")
     name = os.path.basename(filename)
     
