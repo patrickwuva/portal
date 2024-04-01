@@ -3,7 +3,7 @@ import bcrypt
 import requests
 import getpass
 import time
-from helpers.tools import get_key, check_key, put
+from .tools import put
 
 print("Welcome to portal a simple file sharing program")
 
