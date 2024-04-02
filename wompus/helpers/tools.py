@@ -2,12 +2,13 @@ import os
 import json
 import glob
 import base64
-import requests
 import shutil 
+import getpass
+import time
 from pathlib import Path
 
-path = Path.home() / '.wompus' / 'user.conf'
-womp_dir = Path(__file__).resolve().parent
+path = path.home() / '.wompus' / 'user.conf'
+womp_dir = path(__file__).resolve().parent
 
 def make_config():
     if not path.exists():
@@ -23,7 +24,6 @@ def check_key():
     user = get_info()
     if user["username"] == "" or user["api-key"] == 0:
         return False
-
     return True
 
 def put(data):
@@ -36,57 +36,37 @@ def check_size(filepath):
 
     if file_size > max_size:
         return False
-  
     else:
         return True
 
-def send_file(filename):
-    user = get_info()
-    headers = { "X-API-KEY": user["api-key"] , "username": user["username"] }
-    url = "https://chochedportal.xyz/dump"
-    print(f"path: {filename}")
-    name = os.path.basename(filename)
-    if check_size(filename):
-        with open(filename, 'rb') as file:
-            files = {"file": (filename, open(filename), 'rb')}
+def hashed(password):
+    salt = bcrypt.gensalt()
+    hashed_bytes = bcrypt.hashpw(password.encode('utf-8'), salt)
+    return hashed_bytes.decode('utf-8')
 
-    response = requests.post(url, files=files, headers=headers)
+def pass_check(password):
+    l = len(password)
     
-    r_json = response.json()
+    if l < 8 or l > 20:
+        return False
 
-    # could make an error class
-    if "error" in r_json:
-        if r_json["error"] == 100:
-            print(r_json["message"])
-            exit(0)
-        exit(0)
+    return True
 
-    print(response.json())
-
-def get_file(code):
-    user = get_info()
+def pass_prompt():
+    password = getpass.getpass("enter a password between 8-20 characters: ")
     
-    headers = { "X-API-KEY": user["api-key"] , "username": user["username"], "code": code }
-    url = "https://chochedportal.xyz/flush"
-    response = requests.get(url, headers=headers)        
-    r_json = response.json()
+    if not pass_check(password):
+        print(f"invalid password, try again")
+        time.sleep(.5)
+        pass_prompt()
 
-    if "error" in r_json:
-        if r_json["error"] == 100:
-            print(r_json["message"])
-            exit(0)
-   
-        exit(0)
+    password_second = getpass.getpass("re-enter password: ")
 
-        name = r_json['name'] 
-        file_content = base64.b64decode(r_json['file'])
-   
-    with open(name, "wb") as file:
-        file.write(file_content)
-    
-    print(r_json)
-
-    print(f"grabbed file {name}")
+    if password_second != password:
+        print(f"passwords don't match")
+        time.sleep(.5)
+        pass_prompt()
+    return password
 
 
 
