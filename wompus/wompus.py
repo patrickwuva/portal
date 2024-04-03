@@ -2,8 +2,8 @@ import argparse
 import click
 import getpass
 import os
-from .helpers.tools import check_key, get_file, send_file, make_config
-from .helpers.signup import signup 
+from .helpers.tools import check_info, make_config
+from .helpers.user import signup, logout, login, get_key, change_pass, flush, dump  
 import requests
 import base64
 
@@ -26,16 +26,28 @@ def main(ctx, file, code):
     if not check_key():
         signup()
 
-    if file and code:
-        click.echo("can't run both commands")
-        click.echo(ctx.get_help())
+    if file or code:
+        if file and code:
+            click.echo("can't run both commands")
+            click.echo(ctx.get_help())
 
-    elif file:
-        send_file(file)
-    
-    elif code:
-        get_file(code)
-
+        elif file:
+            dump(file)
+        elif code:
+            flush(code)
+        else:
+            click.echo(ctx.get_help())
+    elif user:
+        if signin:
+            pass
+        elif signup:
+            pass
+        elif logout:
+            pass
+        elif change:
+            pass
+        elif get:
+            pass
     else:
         click.echo("Usage: womp [OPTION]\nTry 'womp -h' for help\n")
 
